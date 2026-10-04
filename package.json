@@ -1,0 +1,27 @@
+{
+  "name": "website-health-checker",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Free, no-login website health checker.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "npm run dev -w @whc/web",
+    "dev:scanner": "npm run dev -w @whc/scanner",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev:all": "concurrently -n web,scanner -c cyan,magenta \"npm:dev\" \"npm:dev:scanner\""
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "prettier": "^3.9.9"
+  }
+}

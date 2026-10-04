@@ -1,0 +1,232 @@
+@import 'tailwindcss';
+
+/* ---------------------------------------------------------------------------
+   Design tokens — the only place raw colour / type / motion values live.
+   Brand: "Tropical heat" on warm cream. The health scale (turquoise / orange /
+   red-orange) doubles as the palette; orange and red-orange are used for state
+   and annotation only, never as decoration.
+--------------------------------------------------------------------------- */
+@theme inline {
+  --font-sans: var(--font-schibsted), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+@theme {
+  /* Surfaces — warm cream family (#FCEFC3 is the palette cream) */
+  --color-paper: #fffbf0;
+  --color-paper-deep: #fcefc3;
+  --color-surface: #fffefa;
+  --color-line: #eadfb8;
+
+  /* Text */
+  --color-ink: #16191c;
+  --color-ink-soft: #4b4a42;
+  --color-ink-faint: #8a8676;
+
+  /* Brand — Tropical turquoise (#00CEC8). Use brand-700 for small text on cream. */
+  --color-brand-50: #e6faf9;
+  --color-brand-100: #bff1ef;
+  --color-brand-300: #66deda;
+  --color-brand-500: #00cec8;
+  --color-brand-600: #00b0ab;
+  --color-brand-700: #007f7b;
+
+  /* Accent — orange (#FF9C5F): highlighter + annotation rings */
+  --color-accent: #ff9c5f;
+  --color-mark: #ffe0c8;
+
+  /* Health scale — the palette itself: turquoise → orange → red-orange.
+     Base colours (-fill) are for bars/rings; plain names are text-safe. */
+  --color-good-fill: #00cec8;
+  --color-good: #007f7b;
+  --color-good-soft: #dcf7f6;
+  --color-warn-fill: #ff9c5f;
+  --color-warn: #a8510c;
+  --color-warn-soft: #ffeadb;
+  --color-bad-fill: #eb4203;
+  --color-bad: #b93000;
+  --color-bad-soft: #fde3d9;
+
+  /* Type scale */
+  --text-display: clamp(2.25rem, 1.4rem + 3.4vw, 4.5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-headline: clamp(2rem, 1.4rem + 2.6vw, 3.5rem);
+  --text-headline--line-height: 1.06;
+  --text-headline--letter-spacing: -0.03em;
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-drift: drift 9s ease-in-out infinite;
+
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+}
+
+@layer base {
+  /* Tailwind v4 resets buttons to the default arrow; interactive things should say so. */
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']),
+  summary,
+  label[for],
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-mark);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@media print {
+  html,
+  body {
+    background: var(--color-paper) !important;
+  }
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@layer utilities {
+  /* Highlighter underline for emphasised words. */
+  .marker {
+    background-image: linear-gradient(
+      transparent 72%,
+      var(--color-brand-500) 72%,
+      var(--color-brand-500) 94%,
+      transparent 94%
+    );
+    background-repeat: no-repeat;
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* Faint engineering-paper grid, fades out toward the bottom. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(22 25 28 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(22 25 28 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(to bottom, black 30%, transparent 95%);
+  }
+}
+
+/* Long-form text (legal pages, methodology). Plain elements in, good typography out. */
+@layer components {
+  .prose-doc {
+    color: var(--color-ink-soft);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+    overflow-wrap: break-word;
+  }
+  .prose-doc > * + * {
+    margin-top: 1.15em;
+  }
+  .prose-doc h3 {
+    margin-top: 2.2em;
+    color: var(--color-ink);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+  }
+  .prose-doc strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+  .prose-doc ul,
+  .prose-doc ol {
+    padding-left: 1.4em;
+  }
+  .prose-doc ul {
+    list-style: disc;
+  }
+  .prose-doc ol {
+    list-style: decimal;
+  }
+  .prose-doc li + li {
+    margin-top: 0.45em;
+  }
+  .prose-doc li::marker {
+    color: var(--color-ink-faint);
+  }
+  .prose-doc a {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand-500);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+  }
+  .prose-doc a:hover {
+    text-decoration-color: var(--color-ink);
+  }
+  .prose-doc code {
+    background: var(--color-paper-deep);
+    padding: 0.1em 0.35em;
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    color: var(--color-ink);
+  }
+  .prose-doc table {
+    width: 100%;
+    border-top: 1px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-ink);
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .prose-doc th {
+    padding: 0.7em 1em 0.7em 0;
+    border-bottom: 1px solid var(--color-line);
+    color: var(--color-ink-faint);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .prose-doc td {
+    padding: 0.7em 1em 0.7em 0;
+    border-bottom: 1px solid var(--color-line);
+    vertical-align: top;
+  }
+  .prose-doc tr:last-child td {
+    border-bottom: 0;
+  }
+}

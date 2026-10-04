@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+out
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+
+# Local / generated
+.claude/
+sample-report.pdf
+scratch-*.ts
